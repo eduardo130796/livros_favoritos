@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Livros</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <h1 class="text-center mb-4">📚 Catálogo de Livros</h1>
+
+    <div class="input-group mb-3">
+        <input id="campoBusca" type="text" class="form-control" placeholder="Digite o nome do livro">
+        <button class="btn btn-primary" onclick="buscarLivro()">Buscar</button>
+    </div>
+
+    <div id="resultado" class="row"></div>
+
+    <div class="text-center mt-4">
+        <button onclick="irParaFavoritos()" class="btn btn-success">Ver Favoritos</button>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
