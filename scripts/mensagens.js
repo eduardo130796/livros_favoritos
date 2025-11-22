@@ -4,7 +4,7 @@
 function alerta(mensagem, tipo = 'sucesso', titulo) {
     let toastId, toastTituloElId, toastMensagemElId;
 
-    if (tipo === 'erro') { //escolhe o toast de acordo com o tipo passado em parâmetri
+    if (tipo === 'erro') { //escolhe o toast de acordo com o tipo passado em parâmetro
         toastId = 'toast-erro';
         toastTituloElId = 'toast-erro-titulo';
         toastMensagemElId = 'toast-erro-mensagem';
