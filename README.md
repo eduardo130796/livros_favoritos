@@ -64,3 +64,7 @@ Neste sistema o usuário pode pesquisar livros, marcar os que gostou como favori
     5. Pode excluir anotações e livros quando quiser.
 
     6. Todos os dados ficam guardados no navegador.
+
+Idealizado pelos Alunos: 
+Eduardo Roquête Cabral Júnior - 202420467 e
+Vitória Maria de Souza Almeida Gomes - 202421219
