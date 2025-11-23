@@ -69,7 +69,7 @@ function buscarLivro() {
 
                 let botao = document.createElement("button");
                 botao.classList.add("btn", "btn-outline-success");
-                botao.textContent = "❤️Favoritar";
+                botao.textContent = "❤️ Favoritar";
                 botao.onclick = function() {
                     salvarFavorito(titulo, imagem);
                 };

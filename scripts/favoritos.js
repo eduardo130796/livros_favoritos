@@ -1,60 +1,83 @@
-// -------------------------------------
-// Excluir Livro Favorito
-// -------------------------------------
+//Exclusão de livro favorito
+
 function excluirFavorito(indice) {
+
     if (confirm("Tem certeza que deseja remover este livro dos favoritos?")) {
 
+        // Carrega a lista salva
         let lista = JSON.parse(localStorage.getItem("favoritos"));
 
-        //Remove 1 elemento no índice passado
+        // Remove UM elemento no índice recebido
         lista.splice(indice, 1);
 
-        // Salva a lista atualizada de volta no localStorage
+        // Salva novamente no localStorage
         localStorage.setItem("favoritos", JSON.stringify(lista));
 
+        // Notificação
         alerta("Livro removido com sucesso!", 'sucesso', "Removido!");
 
+        // Recarrega a tela
         carregarFavoritos();
     }
 }
-// -------------------------------------
-// Página de Favoritos
-// -------------------------------------
+
+
+// Mostrar/ocultar campo de anotação
+
 function mostrarAnotacao(indice) {
-    //mostrar e ocultar botão de anotação
+
+    // Pega o container do textarea
     let container = document.getElementById("inputContainer" + indice);
-    if (container.classList.contains("d-none")) { //condição para caso esteja escondido(d-none)
+
+    // Se está oculto → mostrar
+    if (container.classList.contains("d-none")) {
+
         container.classList.remove("d-none");
         container.classList.add("d-flex", "flex-column");
+
+        // Dá foco ao textarea
         document.getElementById("nota" + indice).focus();
-    } else { //caso esteja visível
+
+    } else {
+        // Se está aberto → esconder novamente
         container.classList.add("d-none");
         container.classList.remove("d-flex", "flex-column");
     }
 }
 
-// -------------------------------------
-// Carregar favoritos na página
-// -------------------------------------
+
+
+// Carregar todos os livros favoritos na página
+
 function carregarFavoritos() {
 
+    // Lê os favoritos do localStorage
     let lista = JSON.parse(localStorage.getItem("favoritos"));
 
+    // Se for nulo (primeiro uso), cria lista vazia
     if (lista == null) {
-        lista = []; //se lista não existir, recebe array vazio
+        lista = [];
     }
 
     let area = document.getElementById("listaFavoritos");
+
+    // Se a página não tem a área (por segurança)
     if (!area) return;
 
-    if (lista.length == 0) { //texto para caso tamanho da lista seja igual a 0
+    // Caso não tenha favoritos
+    if (lista.length == 0) {
         area.textContent = "Nenhum favorito salvo.";
         return;
     }
 
+    // Limpa a área antes de montar novamente
     area.innerHTML = "";
 
-    for (let i = 0; i < lista.length; i++) { //cria cada card contendo livro de acordo com o tamanho da lista
+
+
+    // LOOP PRINCIPAL — cria 1 card para cada livro favorito
+
+    for (let i = 0; i < lista.length; i++) {
 
         let col = document.createElement("div");
         col.classList.add("col-md-4", "mb-3");
@@ -62,84 +85,110 @@ function carregarFavoritos() {
         let card = document.createElement("div");
         card.classList.add("card");
 
+        //  Imagem 
         let img = document.createElement("img");
         img.src = lista[i].imagem;
         img.classList.add("card-img-top");
 
+
+        // Corpo do Card 
         let corpo = document.createElement("div");
-        // Adiciona d-flex e flex-column para melhor layout do corpo
         corpo.classList.add("card-body", "d-flex", "flex-column");
 
         let tituloEl = document.createElement("h5");
         tituloEl.textContent = lista[i].titulo;
 
 
-        // --------------------------
-        // LISTA DE ANOTAÇÕES (UL)
-        // --------------------------
+
+        // Lista UL com TODAS as anotações do livro atual
+
         let listaUl = document.createElement("ul");
         listaUl.id = "listaNotas" + i;
-        listaUl.classList.add("list-unstyled", "mt-3", "mb-3"); // Estilos limpos para UL
+        listaUl.classList.add("list-unstyled", "mt-3", "mb-3");
 
+
+        // Loop para criar LI de cada anotação salva
         for (let j = 0; j < lista[i].anotacoes.length; j++) {
+
+            // Cada LI possui texto + botão remover
             let li = document.createElement("li");
-            li.textContent = `• ${lista[i].anotacoes[j]}`; // Adiciona marcador visual
-            li.classList.add("text-secondary");
+            li.classList.add("d-flex", "justify-content-between", "align-items-center", "text-secondary");
+
+            let texto = document.createElement("span");
+            texto.textContent = "• " + lista[i].anotacoes[j];
+
+            let botaoExcluirAnotacao = document.createElement("button");
+            botaoExcluirAnotacao.classList.add("btn", "btn-sm", "btn-outline-danger");
+            botaoExcluirAnotacao.textContent = "Remover";
+
+            // Botão remove aquela anotação específica
+            botaoExcluirAnotacao.onclick = function () {
+                BotaoRemoverAnotacao(i, j);
+            }
+
+            li.appendChild(texto);
+            li.appendChild(botaoExcluirAnotacao);
             listaUl.appendChild(li);
         }
 
-        // ------------------------------------
-        // Lápis
-        // ------------------------------------
+
+
+        // Botão para abrir o campo de anotação
+     
 
         let botaoLapis = document.createElement("button");
-        // mx-auto centraliza horizontalmente (margin auto)
         botaoLapis.classList.add("btn", "btn-link", "mt-3", "text-decoration-none", "mx-auto");
-        botaoLapis.innerHTML = '✏️ Escrever Anotação';
-        botaoLapis.onclick = function() { // Ao clicar, chama a função de toggle para mostrar o input
+        botaoLapis.textContent = '✏️ Escrever Anotação';
+
+        botaoLapis.onclick = function () {
             mostrarAnotacao(i);
         };
 
-        let botaoExcluir = document.createElement("button");
-        // mx-auto centraliza horizontalmente, btn-sm é pequeno e btn-outline-danger é a cor
-        botaoExcluir.classList.add("btn", "btn-sm", "btn-outline-danger", "mx-auto");
-        botaoExcluir.innerHTML = '🗑️ Excluir';
 
-        botaoExcluir.onclick = function() {
+
+        // Botão para excluir o livro
+
+        let botaoExcluir = document.createElement("button");
+        botaoExcluir.classList.add("btn", "btn-sm", "btn-outline-danger", "mx-auto");
+        botaoExcluir.textContent = '🗑️ Excluir';
+
+        botaoExcluir.onclick = function () {
             excluirFavorito(i);
         };
 
-        // Adiciona o Título e o Botão ao corpo do card
-        corpo.appendChild(tituloEl);
-        corpo.appendChild(botaoExcluir);
+
+
+        // Container onde o textarea aparece
 
         let inputContainer = document.createElement("div");
         inputContainer.id = "inputContainer" + i;
-        //'d-none' para esconder o campo
         inputContainer.classList.add("mostrarAnotacao-input-container", "d-none", "mt-3", "mb-3");
 
         let textarea = document.createElement("textarea");
-        textarea.id = "nota" + i; // id para capturar o valor
+        textarea.id = "nota" + i;
         textarea.placeholder = "Escreva sua anotação aqui...";
         textarea.classList.add("form-control");
 
-        //Botão Salvar
         let botaoSalvar = document.createElement("button");
-        botaoSalvar.classList.add("btn", "btn-primary", "mt-2", "w-100"); // w-100 para largura total
+        botaoSalvar.classList.add("btn", "btn-primary", "mt-2", "w-100");
         botaoSalvar.textContent = "Salvar Anotação";
-        botaoSalvar.onclick = function() {
+        botaoSalvar.onclick = function () {
             salvarAnotacao(i);
         };
 
-        // monta o inputContainer
         inputContainer.appendChild(textarea);
         inputContainer.appendChild(botaoSalvar);
 
-        // adiciona tudo ao corpo do card
+
+
+        // MONTAGEM FINAL DO CARD
+
         corpo.appendChild(tituloEl);
+        corpo.appendChild(botaoExcluir);
         corpo.appendChild(listaUl);
-        corpo.appendChild(botaoLapis); // botão Lápis
-        corpo.appendChild(inputContainer); // container escondido
+        corpo.appendChild(botaoLapis);
+        corpo.appendChild(inputContainer);
+
         card.appendChild(img);
         card.appendChild(corpo);
         col.appendChild(card);
@@ -147,42 +196,77 @@ function carregarFavoritos() {
     }
 }
 
-// -------------------------------------
-carregarFavoritos();
-// -------------------------------------
 
-// Salvar anotação em lista
-// -------------------------------------
+
+// Carrega ao abrir a página
+carregarFavoritos();
+
+
+
+// Salvar nova anotação na UL e no localStorage
+
 function salvarAnotacao(indice) {
 
     let lista = JSON.parse(localStorage.getItem("favoritos"));
-
     let texto = document.getElementById("nota" + indice).value;
 
+    // Validação
     if (texto == "") {
-        // Validação: Exibe alerta se o campo estiver vazio
-        alerta("A anotação não pode estar vazia.",'erro',"Vazio");
+        alerta("A anotação não pode estar vazia.", 'erro', "Vazio");
         return;
     }
 
-    // Adiciona a anotação à lista e atualiza o localStorage
+    // Salva no array e no localStorage
     lista[indice].anotacoes.push(texto);
     localStorage.setItem("favoritos", JSON.stringify(lista));
 
-    // Adicionar item visualmente sem recarregar
-    let li = document.createElement("li");
-    li.textContent = `• ${texto}`; // Adiciona marcador para consistência visual
-    li.classList.add("text-secondary"); // Adiciona classe para consistência visual
-
+    // UL que mostra as anotações
     let listaUl = document.getElementById("listaNotas" + indice);
+
+    // Cria LI nova
+    let li = document.createElement("li");
+    li.classList.add("d-flex", "justify-content-between", "align-items-center", "text-secondary");
+
+    let textoSpan = document.createElement("span");
+    textoSpan.textContent = "• " + texto;
+
+    let novoIndice = lista[indice].anotacoes.length - 1;
+
+    let botaoExcluirAnotacao = document.createElement("button");
+    botaoExcluirAnotacao.classList.add("btn", "btn-sm", "btn-outline-danger");
+    botaoExcluirAnotacao.textContent = "Remover";
+
+    botaoExcluirAnotacao.onclick = function () {
+        BotaoRemoverAnotacao(indice, novoIndice);
+    };
+
+    li.appendChild(textoSpan);
+    li.appendChild(botaoExcluirAnotacao);
+
     listaUl.appendChild(li);
 
-    // Limpa o campo de texto
+    // Limpa textarea
     document.getElementById("nota" + indice).value = "";
 
-    //Fecha o inputContainer chamando a função de toggle
+    // Fecha o campo
     mostrarAnotacao(indice);
 
-    //Mostra notificação de sucesso
     alerta("Anotação salva com sucesso!", 'sucesso', "Salva!");
+}
+
+
+
+// Remoção de anotação individual
+
+function BotaoRemoverAnotacao(i, j) {
+
+    let lista = JSON.parse(localStorage.getItem("favoritos"));
+
+    lista[i].anotacoes.splice(j, 1);
+
+    localStorage.setItem("favoritos", JSON.stringify(lista));
+
+    carregarFavoritos();
+
+    alerta("Anotação removida!", "sucesso", "Removida!");
 }
