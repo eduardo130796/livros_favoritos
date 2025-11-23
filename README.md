@@ -1,4 +1,4 @@
-Este sistema é um Catálogo de Livros que funciona de forma a buscar os livros e poder Favoritar e comentar.
+Neste sistema o usuário pode pesquisar livros, marcar os que gostou como favoritos e escrever suas anotações.
 
 1. O que o sistema faz:
 
